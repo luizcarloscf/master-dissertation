@@ -1,0 +1,6 @@
+numpy==1.25.0
+is-wire==1.2.1
+is-msgs==1.1.18
+opencv-python==4.11.0.86
+imutils==0.5.4      
+six==1.17.0
