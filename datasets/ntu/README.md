@@ -33,7 +33,7 @@ Your dataset directory should follow the structure below:
 ```
 
 - `ntu-60/` and `ntu-120/` will contain preprocessed outputs.
-- `nturgbd_raw/` stores the raw skeleton sequences provided by NTU.
+- `ntu-raw/` stores the raw skeleton sequences provided by NTU.
 
 ---
 
