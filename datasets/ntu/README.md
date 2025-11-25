@@ -27,7 +27,7 @@ Your dataset directory should follow the structure below:
          - nturgb+d_skeletons/     # from `nturgbd_skeletons_s001_to_s017.zip`
             - S001C001P001R001A001.skeleton
             ...
-        - nturgb+d_skeletons120/  # from `nturgbd_skeletons_s018_to_s032.zip`
+         - nturgb+d_skeletons120/  # from `nturgbd_skeletons_s018_to_s032.zip`
             - S018C001P001R001A001.skeleton
             ... 
 ```
