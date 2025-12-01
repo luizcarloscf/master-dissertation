@@ -1,9 +1,10 @@
 from typing import List
 
 import numpy as np
+from sklearn.utils.class_weight import compute_class_weight
 from torch.utils.data import Dataset
 
-from .tools import valid_crop_resize, random_rot
+from .tools import random_rot, valid_crop_resize
 
 
 class NTURGBD(Dataset):
@@ -84,3 +85,8 @@ class NTURGBD(Dataset):
         C, T, V, M = data_numpy.shape
         data_numpy = data_numpy.permute(3, 1, 2, 0)
         return data_numpy, label
+
+    def compute_class_weights(self):
+        # labels = [y for _, y in self]
+        weights = compute_class_weight(class_weight="balanced", classes=np.unique(self.label), y=self.label)
+        return weights
