@@ -218,3 +218,4 @@ datasets/ntu/ntu-120/raw_data/
 datasets/ntu/ntu-120/denoised_data/
 datasets/ntu/ntu-120/*.npz
 
+recognition/output_dir
