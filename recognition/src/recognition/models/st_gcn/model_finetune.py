@@ -137,6 +137,9 @@ class STGCN(nn.Module):
 
     def extract_feature(self, x):
 
+        N, M, T, V, C = x.shape
+        x = x.permute(0, 4, 2, 3, 1)
+
         # data normalization
         N, C, T, V, M = x.size()
         x = x.permute(0, 4, 3, 1, 2).contiguous()
