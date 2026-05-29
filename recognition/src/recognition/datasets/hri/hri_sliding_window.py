@@ -8,7 +8,7 @@ from torchvision.transforms import Compose
 from sklearn.utils.class_weight import compute_class_weight
 
 
-from .augmentations import TranslateToOrigin, RandomRotation
+from ..augmentations import Translate, RandomRotation
 
 
 class SlidingWindowDataset(torch.utils.data.Dataset):
@@ -29,14 +29,14 @@ class SlidingWindowDataset(torch.utils.data.Dataset):
         if transform:
             self.transform = Compose(
                 [
-                    TranslateToOrigin(joint_idx=0),
+                    Translate(),
                     RandomRotation(max_angle=0.3, axes=("z")),
                 ]
             )
         else:
             self.transform = Compose(
                 [
-                    TranslateToOrigin(joint_idx=0),
+                    Translate(),
                 ]
             )
         raw_data = self.load_all_sequences(
@@ -137,7 +137,5 @@ class SlidingWindowDataset(torch.utils.data.Dataset):
         return len(self._data)
 
     def compute_class_weights(self):
-        # labels = [y for _, y in self]
-        # weights = compute_class_weight(class_weight="balanced", classes=np.unique(labels), y=labels)
         weights = compute_class_weight(class_weight="balanced", classes=np.unique(self._label), y=self._label)
         return weights

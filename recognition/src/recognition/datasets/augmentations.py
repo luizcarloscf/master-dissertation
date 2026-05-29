@@ -32,6 +32,37 @@ class TranslateToOrigin(nn.Module):
         return torch.cat((skeleton_seq_xy, skeleton_seq_z), dim=-1)  # (M, T, V, 3)
 
 
+class Translate(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x: torch.Tensor):
+        if len(x.shape) > 4:
+            N, M, T, V, C = x.shape
+            x = x.reshape(N * M, T, V, C)
+            x_center = x[:, 0].mean(dim=1, keepdim=True).unsqueeze(1)  # [M, 1, 1, 3]
+            x_out = x - x_center  # broadcast: [M, T, V, 3] - [M, 1, 1, 3]
+            x_out = x_out.reshape(N, M, T, V, C)
+            return x_out
+
+        M, T, V, C = x.shape
+        x_center = x[:, 0].mean(dim=1, keepdim=True).unsqueeze(1)  # [M, 1, 1, 3]
+        x_out = x - x_center  # broadcast: [M, T, V, 3] - [M, 1, 1, 3]
+        return x_out
+
+
+class RandomScaling(nn.Module):
+    def __init__(self, min_scale=0.9, max_scale=1.1):
+        super().__init__()
+        self.min_scale = min_scale
+        self.max_scale = max_scale
+
+    def forward(self, x: torch.Tensor):
+        M, T, V, C = x.shape
+        scale = torch.empty(1, device=x.device, dtype=x.dtype).uniform_(self.min_scale, self.max_scale)
+        return x * scale
+
+
 class RandomRotation(nn.Module):
     def __init__(self, max_angle=0.3, axes=("x", "y", "z")):
         super().__init__()

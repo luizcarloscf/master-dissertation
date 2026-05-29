@@ -13,9 +13,10 @@ from ..augmentations import (
     Translate,
     RandomScaling,
 )
+from ..masking import MaskGenerator
 
 
-class ClipDataset(torch.utils.data.Dataset):
+class ClipMaskingDataset(torch.utils.data.Dataset):
 
     def __init__(
         self,
@@ -29,6 +30,10 @@ class ClipDataset(torch.utils.data.Dataset):
         background: bool = True,
         repeat: int = 1,
         min_background_samples: int = 16,
+        num_joints: int = 17,
+        mask_patch_size: int = 8,
+        model_patch_size: int = 2,
+        mask_ratio: float = 0.6,
     ):
         self.repeat = repeat
         self.p_interval = p_interval
@@ -58,6 +63,13 @@ class ClipDataset(torch.utils.data.Dataset):
             class_id_list=class_id_list,
         )
         self._data, self._label = self.make_clips(data=raw_data)
+        self.mask_generator = MaskGenerator(
+            input_size=num_frames,
+            num_joints=num_joints,
+            mask_patch_size=mask_patch_size,
+            model_patch_size=model_patch_size,
+            mask_ratio=mask_ratio,
+        )
 
     def convert_segments(self, data, gesture_class, non_gesture_class=0):
         n_samples = data["n_samples"]
@@ -134,7 +146,9 @@ class ClipDataset(torch.utils.data.Dataset):
     def __getitem__(self, index):
         x = self._data[index % len(self._data)]
         x = self.transform(x)
-        return x, self._label[index % len(self._label)]
+        mask = self.mask_generator()
+
+        return x, self._label[index % len(self._label)], mask
 
     def __len__(self):
         return len(self._data) * self.repeat
